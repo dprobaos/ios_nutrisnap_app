@@ -1,0 +1,55 @@
+# ================================================================
+#  project.yml — Spec do XcodeGen (gera NutriSnapApp.xcodeproj sem Mac)
+#  O Codemagic roda `xcodegen generate` e builda → TestFlight.
+#  Target único: casca WebView do NutriSnap.
+# ================================================================
+name: NutriSnapApp
+options:
+  bundleIdPrefix: com.dprobaos
+  deploymentTarget:
+    iOS: "15.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: "4P5D9V48GJ"
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "5.0"
+    GENERATE_INFOPLIST_FILE: YES
+
+targets:
+  NutriSnapApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: NutriSnapApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dprobaos.nutrisnap
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    info:
+      path: NutriSnapApp/Info.plist
+      properties:
+        CFBundleDisplayName: "NutriSnap"
+        NSCameraUsageDescription: "Usado para fotografar seu prato e sua dieta e estimar a nutrição."
+        NSPhotoLibraryUsageDescription: "Usado para escolher fotos do prato ou da dieta da sua galeria."
+        ITSAppUsesNonExemptEncryption: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+
+schemes:
+  NutriSnapApp:
+    build:
+      targets:
+        NutriSnapApp: all
+    archive:
+      config: Release
