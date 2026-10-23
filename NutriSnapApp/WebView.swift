@@ -4,7 +4,7 @@
 //   - Diálogos JS (alert/confirm/prompt) via WKUIDelegate (usados pelo app)
 //   - Links target="_blank"/window.open abrem na própria WebView
 //   - Links externos (outro domínio) abrem no Safari
-//  Sem login/biometria: o NutriSnap não tem conta.
+//   - Ponte Apple Saúde (HealthBridge): peso/gordura da balança → tela Evolução
 
 import SwiftUI
 import WebKit
@@ -25,7 +25,10 @@ struct WebView: UIViewRepresentable {
             WKUserScript(source: "window.__NATIVE_APP__ = true;",
                          injectionTime: .atDocumentStart, forMainFrameOnly: false))
 
+        config.userContentController.add(context.coordinator.health, name: "health")
+
         let wv = WKWebView(frame: .zero, configuration: config)
+        context.coordinator.health.webView = wv
         wv.allowsBackForwardNavigationGestures = true
         wv.navigationDelegate = context.coordinator
         wv.uiDelegate = context.coordinator
@@ -37,6 +40,21 @@ struct WebView: UIViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator() }
 
     final class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
+        let health = HealthBridge()
+
+        override init() {
+            super.init()
+            // Voltou ao app (pesou na balança nesse meio-tempo) → relê o Apple Saúde.
+            NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification,
+                                                   object: nil, queue: .main) { [weak self] _ in
+                self?.health.sync(pedirPermissao: false)
+            }
+        }
+
+        // Página carregada → entrega os dados do Apple Saúde (se já conectado).
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            health.sync(pedirPermissao: false)
+        }
 
         // target="_blank"/window.open → carrega na mesma WebView (senão "morre")
         func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration,

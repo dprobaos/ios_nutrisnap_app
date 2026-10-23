@@ -31,12 +31,19 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    entitlements:
+      path: NutriSnapApp/NutriSnapApp.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
     info:
       path: NutriSnapApp/Info.plist
       properties:
         CFBundleDisplayName: "NutriSnap"
         NSCameraUsageDescription: "Usado para fotografar seu prato e sua dieta e estimar a nutrição."
         NSPhotoLibraryUsageDescription: "Usado para escolher fotos do prato ou da dieta da sua galeria."
+        NSHealthShareUsageDescription: "O NutriSnap lê seu peso, gordura corporal e IMC do Apple Saúde (ex.: da sua balança) para mostrar sua evolução."
+        NSHealthUpdateUsageDescription: "O NutriSnap não grava dados no Apple Saúde; apenas lê suas medidas corporais."
         ITSAppUsesNonExemptEncryption: false
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
